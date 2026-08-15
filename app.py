@@ -132,25 +132,31 @@ def process_message():
 
 @app.route("/test", methods=["GET"])
 def test_ai():
+    try:
+        response = client.responses.create(
+            model="gpt-5-mini",
+            input=[
+                {
+                    "role": "developer",
+                    "content": SYSTEM_PROMPT
+                },
+                {
+                    "role": "user",
+                    "content": "Hey, I'm interested in your mentorship"
+                }
+            ]
+        )
 
-    response = client.responses.create(
-        model="gpt-5-mini",
-        input=[
-            {
-                "role": "developer",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                "role": "user",
-                "content": "Hey, I'm interested in your mentorship"
-            }
-        ]
-    )
+        return jsonify({
+            "status": "success",
+            "reply": response.output_text
+        })
 
-    return jsonify({
-        "reply": response.output_text
-    })
-
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e)
+        }), 500
 
 if __name__ == "__main__":
     app.run(

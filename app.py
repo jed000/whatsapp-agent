@@ -132,6 +132,10 @@ def process_message():
 
 @app.route("/test", methods=["GET"])
 def test_ai():
+    return jsonify({
+        "status": "test_route_working",
+        "message": "Jed's Capital AI test endpoint is working"
+    })
     try:
         response = client.responses.create(
             model="gpt-5-mini",

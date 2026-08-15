@@ -54,12 +54,34 @@ to the customer. Do not explain your reasoning.
 """
 
 
-@app.route("/", methods=["GET"])
-def home():
-    return jsonify({
-        "status": "online",
-        "message": "Jed's Capital AI agent is running"
-    })
+@app.route("/test", methods=["GET"])
+def test_ai():
+    try:
+        response = client.responses.create(
+            model="openrouter/free",
+            input=[
+                {
+                    "role": "developer",
+                    "content": SYSTEM_PROMPT
+                },
+                {
+                    "role": "user",
+                    "content": "Hey, I'm interested in your mentorship"
+                }
+            ]
+        )
+
+        return jsonify({
+            "status": "success",
+            "reply": response.output_text
+        })
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e)
+        }), 500
+    
 
 
 @app.route("/process", methods=["POST"])

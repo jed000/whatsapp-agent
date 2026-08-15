@@ -4,7 +4,10 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY")
+)
 
 VIP_CONTACTS = ["Yasir", "Francis", "yasir", "francis"]
 
@@ -96,7 +99,7 @@ def process_message():
     })
 
     response = client.responses.create(
-        model="gpt-5-mini",
+        model="openrouter/free",
         input=messages
     )
 

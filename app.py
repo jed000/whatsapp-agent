@@ -15,8 +15,8 @@ SYSTEM_PROMPT = """
 You are Jed's Capital's WhatsApp assistant.
 
 Your job is to help people who message Jed's Capital about trading,
-trading mentorship, prop firm accounts, investment-related
-enquiries, and other services Jed's Capital offers.
+trading mentorship, prop firm accounts, investment-related enquiries,
+and other services Jed's Capital offers.
 
 CONVERSATION STYLE:
 - Be natural, warm and conversational.
@@ -54,34 +54,12 @@ to the customer. Do not explain your reasoning.
 """
 
 
-@app.route("/test", methods=["GET"])
-def test_ai():
-    try:
-        response = client.responses.create(
-            model="openrouter/free",
-            input=[
-                {
-                    "role": "developer",
-                    "content": SYSTEM_PROMPT
-                },
-                {
-                    "role": "user",
-                    "content": "Hey, I'm interested in your mentorship"
-                }
-            ]
-        )
-
-        return jsonify({
-            "status": "success",
-            "reply": response.output_text
-        })
-
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "error": str(e)
-        }), 500
-    
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({
+        "status": "online",
+        "message": "Jed's Capital AI agent is running"
+    })
 
 
 @app.route("/process", methods=["POST"])
@@ -157,13 +135,10 @@ def process_message():
 
 @app.route("/test", methods=["GET"])
 def test_ai():
-    return jsonify({
-        "status": "test_route_working",
-        "message": "Jed's Capital AI test endpoint is working"
-    })
+
     try:
         response = client.responses.create(
-            model="gpt-5-mini",
+            model="openrouter/free",
             input=[
                 {
                     "role": "developer",
@@ -182,10 +157,12 @@ def test_ai():
         })
 
     except Exception as e:
+
         return jsonify({
             "status": "error",
             "error": str(e)
         }), 500
+
 
 if __name__ == "__main__":
     app.run(

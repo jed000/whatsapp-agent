@@ -94,12 +94,22 @@ def process_message():
         "content": message
     })
 
-    response = client.responses.create(
-        model="openrouter/free",
-        input=messages
-    )
+  response = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {os.environ.get('OPENROUTER_API_KEY')}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "model": "openrouter/free",
+        "messages": messages
+    }
+)
 
-    reply = response.output_text
+response.raise_for_status()
+
+result = response.json()
+reply = result["choices"][0]["message"]["content"]
 
     handoff_words = [
         "ready to join",
@@ -133,24 +143,35 @@ def process_message():
 def test_ai():
 
     try:
-        response = client.responses.create(
-            model="openrouter/free",
-            input=[
-                {
-                    "role": "developer",
-                    "content": SYSTEM_PROMPT
-                },
-                {
-                    "role": "user",
-                    "content": "Hey, I'm interested in your mentorship"
-                }
-            ]
-        )
+        response = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {os.environ.get('OPENROUTER_API_KEY')}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "model": "openrouter/free",
+        "messages": [
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
+            {
+                "role": "user",
+                "content": "Hey, I'm interested in your mentorship"
+            }
+        ]
+    }
+)
 
-        return jsonify({
-            "status": "success",
-            "reply": response.output_text
-        })
+response.raise_for_status()
+
+result = response.json()
+
+return jsonify({
+    "status": "success",
+    "reply": result["choices"][0]["message"]["content"]
+})
 
     except Exception as e:
 

@@ -1,13 +1,9 @@
 import os
+import requests
 from flask import Flask, request, jsonify
-from openai import OpenAI
 
 app = Flask(__name__)
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ.get("OPENROUTER_API_KEY")
-)
 
 VIP_CONTACTS = ["Yasir", "Francis", "yasir", "francis"]
 
